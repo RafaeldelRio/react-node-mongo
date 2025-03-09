@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Servicio de MongoDB
+  mongodb:
+    image: mongo:latest
+    container_name: todo-mongodb
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - todo-network
+
+  # Servicio de Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todo-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/todo-app
+    depends_on:
+      - mongodb
+    networks:
+      - todo-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  # Servicio de Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: todo-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - todo-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+# Volúmenes
+volumes:
+  mongo-data:
+    driver: local
+
+# Redes
+networks:
+  todo-network:
+    driver: bridge
