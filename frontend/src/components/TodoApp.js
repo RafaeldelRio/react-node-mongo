@@ -7,8 +7,8 @@ const TodoApp = () => {
   const [error, setError] = useState(null);
 
   // URL de la API (utilizando ruta relativa aprovechando el proxy de Nginx)
-  const API_URL = 'http://localhost:5000/api/tasks';
-  // const API_URL = '/api/tasks';
+  // const API_URL = 'http://localhost:5000/api/tasks';
+  const API_URL = '/api/tasks';
 
   // Cargar tareas desde el servidor
   useEffect(() => {
